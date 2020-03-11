@@ -28,30 +28,26 @@ export class SchedulesService {
       deleteSchedule(scheduleId: string): Promise<Schedule>{
         return this.scheduleModel.deleteOne({ _id: scheduleId });
     }
-      //TODO: Buscar la manera correcta de hacer las peticiones 
+      //TODO: Buscar la manera correcta de guardar datos de schedule
     async addSchedule(schedule: Partial<Schedule>): Promise<Schedule>{
         let scheduleId
         //const medic = this.UserModel.findOne(schedule.mid)
-        console.log(schedule.uid)
+        
         const medic = await this.userService.findUserById(schedule.mid)
-        console.log(medic)
-        const newSchedule = this.scheduleModel(schedule, { speciality: medic.speciality,  medicName: medic.speciality })
+ 
+        schedule.speciality = medic[0].speciality
+        schedule.medicName = medic[0].displayName
+         
+        const newSchedule = this.scheduleModel(schedule)
         newSchedule.save();
-        console.log(newSchedule)
-        const beforeNewSchedule = this.scheduleModel({})
+        console.log(newSchedule.uid)
+        const MedicSchedule = await this.userService.UpdateUserReserve(newSchedule.mid, {$push:{schedules:newSchedule._id}})
+        console.log( MedicSchedule)
+        const UserSchedule = await this.userService.UpdateUserReserve(newSchedule.uid, {$push:{reserves:newSchedule._id}})
+        console.log( UserSchedule)
        
         return new Promise((resolve, reject) => {
-            const res = newSchedule.toObject({ versionKey: false }).them(( schedule ) => { scheduleId = schedule._id });
-            this.userService.findOneUpdateUser(newSchedule.uid,{ reserves: { $elemMatch:{ $eq: scheduleId }}}).catch((err) => {
-                if(err){
-                    reject(new Error('Error en agregar reserva en User!'));
-                }
-            })
-            this.userService.findOneUpdateUser(newSchedule.mid,{ schedule: { $elemMatch:{ $eq: scheduleId }}}).catch((err) => {
-                if(err){
-                    reject(new Error('Error en agregar reserva en Medic!'));
-                }
-            })
+            const res = newSchedule.toObject({ versionKey: false });
             console.log('Updated')
             resolve(res) 
                 
