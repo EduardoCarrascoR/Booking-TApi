@@ -7,7 +7,8 @@ import { ValidationPipe, ValidationError } from '@nestjs/common';
 import { ValidationException } from './filters/validation.exception';
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+if (process.env.Nest_Env !== "Production") dotenv.config();
+
 const port = process.env.PORT || 3000
 
 async function bootstrap() {
