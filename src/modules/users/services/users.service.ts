@@ -32,8 +32,8 @@ export class UserService {
         return this.userModel.findOneAndUpdate({ _id: userId }, changes, { new: true })
     }
 
-    findOneUpdateUser(userId: string, changes: any): Promise<User>{
-        return this.userModel.findOneAndUpdate({ _id: userId }, changes, { new: true })
+    UpdateUserReserve(userId: string, changes: any): Promise<User>{
+        return this.userModel.updateOne({ _id: userId }, changes)
     }
 
     deleteUser(userId: string): Promise<User>{

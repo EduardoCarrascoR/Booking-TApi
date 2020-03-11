@@ -27,6 +27,9 @@ export const UsersSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true, trim: true },
   photoURL: { type: String, required: true },
   roles: { type: [String], default: ['CLIENT'] },
+  reserves: { type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Schedule' 
+  },
   dni: { type: String, required: true, lowercase: true, unique: true, trim: true },
   birthday: { type: Date, required: true },
   speciality: { type: String, default: 'N/A'},
