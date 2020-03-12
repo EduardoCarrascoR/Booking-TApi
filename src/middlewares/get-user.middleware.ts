@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
 @Injectable()
 export class GetUserMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: () => void) {
-    const authJwtToken = req.headers.authorization.replace(/^Bearer /, '');
+    const authJwtToken = req.headers.authorization
     if(!authJwtToken) {
       next();
       return;
