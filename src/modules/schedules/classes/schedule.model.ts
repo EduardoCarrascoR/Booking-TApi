@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document } from "mongoose";
-import { IsString, IsMongoId, IsDate, IsMilitaryTime } from "class-validator";
+import { IsString, IsMongoId, IsDate, IsMilitaryTime, IsISO8601 } from "class-validator";
 
 export const SchedulesSchema = new mongoose.Schema({
     mid: { type: String, required: true },
