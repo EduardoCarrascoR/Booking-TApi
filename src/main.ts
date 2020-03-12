@@ -16,8 +16,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalFilters(
     new FallbackExceptionFilter(),
-    new HttpExceptionFilter(),
-    new ValidationFilter()
+    //new HttpExceptionFilter(),
+    //new ValidationFilter()
   );
   app.useGlobalPipes(new ValidationPipe({
     skipMissingProperties: true,

@@ -23,3 +23,10 @@ export class Schedule extends Document{
     @IsString() speciality: string;
     @IsString() state: string;
 }
+export class ScheduleChange {
+    @IsString() @IsMongoId() mid: string;
+    @IsString() @IsMongoId() uid: string;
+    @IsISO8601() date: Date;
+    @IsMilitaryTime() @IsString() hour: string;
+}
+
