@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import { Schedule } from '../classes/schedule.model';
 import { User } from 'src/modules/users/classes/user.model';
 import { UserService } from 'src/modules/users/services/users.service';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class SchedulesService {
@@ -17,8 +18,11 @@ export class SchedulesService {
     findAll(): Promise<Schedule[]> {
         return this.scheduleModel.find();
     }
-      findUsersSchedules(uId: String): Promise<Schedule[]> {
+    findMedicsSchedules(uId: String): Promise<Schedule[]> {
         return this.scheduleModel.find({ mid: uId });
+    }
+    findUsersReserves(uId: String): Promise<Schedule[]> {
+        return this.scheduleModel.find({ uid: uId });
     }
     
       updateSchedule(scheduleId: string, changes: Partial<Schedule>): Promise<Schedule>{
@@ -28,35 +32,38 @@ export class SchedulesService {
       deleteSchedule(scheduleId: string): Promise<Schedule>{
         return this.scheduleModel.deleteOne({ _id: scheduleId });
     }
-      //TODO: Buscar la manera correcta de hacer las peticiones 
+
     async addSchedule(schedule: Partial<Schedule>): Promise<Schedule>{
-        let scheduleId
-        //const medic = this.UserModel.findOne(schedule.mid)
-        console.log(schedule.uid)
         const medic = await this.userService.findUserById(schedule.mid)
-        console.log(medic)
-        const newSchedule = this.scheduleModel(schedule, { speciality: medic.speciality,  medicName: medic.speciality })
-        newSchedule.save();
-        console.log(newSchedule)
-        const beforeNewSchedule = this.scheduleModel({})
+        console.log(schedule)
+        const Schedule = await this.scheduleModel.findOne({mid: schedule.mid, uid: schedule.uid, hour: schedule.hour, date: schedule.date})
+        console.log(Schedule)
+
+        if( Schedule !== null) {
+          console.log("ERROR EN RESERVA, ESTA YA EXISTE")
+        }else if(Schedule === null) {
+
+          schedule.speciality = medic[0].speciality
+          schedule.medicName = medic[0].displayName
+           
+          const newSchedule = this.scheduleModel(schedule)
+          newSchedule.save()
+          const MedicSchedule = await this.userService.UserReserveAdd(newSchedule.mid, {$push:{schedules:newSchedule._id}})
+          console.log( MedicSchedule)
+          const UserSchedule = await this.userService.UserReserveAdd(newSchedule.uid, {$push:{reserves:newSchedule._id}})
+          console.log( UserSchedule)
+          console.log(newSchedule.uid)
+          
        
-        return new Promise((resolve, reject) => {
-            const res = newSchedule.toObject({ versionKey: false }).them(( schedule ) => { scheduleId = schedule._id });
-            this.userService.findOneUpdateUser(newSchedule.uid,{ reserves: { $elemMatch:{ $eq: scheduleId }}}).catch((err) => {
-                if(err){
-                    reject(new Error('Error en agregar reserva en User!'));
-                }
-            })
-            this.userService.findOneUpdateUser(newSchedule.mid,{ schedule: { $elemMatch:{ $eq: scheduleId }}}).catch((err) => {
-                if(err){
-                    reject(new Error('Error en agregar reserva en Medic!'));
-                }
-            })
+          return new Promise((resolve, reject) => {
+            const res = newSchedule.toObject({ versionKey: false });
             console.log('Updated')
             resolve(res) 
                 
             
-        })
+          })
+        }
+        
 
     }
 }

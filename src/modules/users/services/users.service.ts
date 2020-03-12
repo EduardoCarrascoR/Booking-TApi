@@ -31,15 +31,15 @@ export class UserService {
     updateUser(userId: string, changes: Partial<User>): Promise<User>{
         return this.userModel.findOneAndUpdate({ _id: userId }, changes, { new: true })
     }
-
-    findOneUpdateUser(userId: string, changes: any): Promise<User>{
-        return this.userModel.findOneAndUpdate({ _id: userId }, changes, { new: true })
-    }
-
+    
     deleteUser(userId: string): Promise<User>{
         return this.userModel.deleteOne({ _id: userId });
     }
     
+    UserReserveAdd(userId: string, changes: any): Promise<User>{
+        return this.userModel.updateOne({ _id: userId }, changes)
+    }
+
     async addUser(user: Partial<User>): Promise<User>{
         let newUser
     
