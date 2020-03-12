@@ -1,7 +1,7 @@
-import { HttpexceptionFilter } from './httpexception.filter';
+import { HttpExceptionFilter } from './httpexception.filter';
 
 describe('HttpexceptionFilter', () => {
   it('should be defined', () => {
-    expect(new HttpexceptionFilter()).toBeDefined();
+    expect(new HttpExceptionFilter()).toBeDefined();
   });
 });

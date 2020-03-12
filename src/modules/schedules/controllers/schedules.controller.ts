@@ -17,7 +17,7 @@ export class SchedulesController {
     }
     @Get(':UserId')
     async findAllUsersReserves(@Param('UserId') uId: string): Promise<Schedule[]> {
-        console.log(`Searching all the doctor's schedules`);
+        console.log(`Searching all the user's schedules`);
         return this.scheduleService.findUsersReserves(uId)
             .then((result) => {
                 if(result){
