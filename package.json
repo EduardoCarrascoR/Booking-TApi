@@ -66,6 +66,9 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "engines": {
+      "node": "12.x"
+    }
   }
 }
