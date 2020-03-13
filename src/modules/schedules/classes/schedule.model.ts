@@ -17,7 +17,7 @@ export class Schedule extends Document{
     @IsString() @IsMongoId() _id: string;
     @IsString() @IsMongoId() mid: string;
     @IsString() @IsMongoId() uid: string;
-    @IsDate() date: Date;
+    @IsISO8601() date: Date;
     @IsMilitaryTime() @IsString() hour: string;
     @IsString() medicName: string;
     @IsString() speciality: string;
