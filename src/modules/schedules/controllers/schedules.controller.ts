@@ -10,24 +10,21 @@ export class SchedulesController {
         private scheduleService: SchedulesService
     ) {}
 
-    @Get(':MedicId')
+    @Get('all')
+    async findAll(): Promise<Schedule[]> {
+        console.log(`Searching all the doctor's schedules`);
+        return this.scheduleService.findAll()
+    }
+    @Get('medic/:MedicId')
     async findAllMedicsSchedules(@Param('MedicId') mId: string): Promise<Schedule[]> {
         console.log(`Searching all the doctor's schedules`);
         return this.scheduleService.findMedicsSchedules(mId)
     }
-    @Get(':UserId')
+    @Get('user/:UserId')
     async findAllUsersReserves(@Param('UserId') uId: string): Promise<Schedule[]> {
         console.log(`Searching all the user's schedules`);
         return this.scheduleService.findUsersReserves(uId)
-            .then((result) => {
-                if(result){
-                    return result
-                } else {
-                    throw new HttpException('reserve no found', HttpStatus.NOT_FOUND)
-                }
-            }).catch(() => {
-                throw new HttpException('reserve no found', HttpStatus.NOT_FOUND)
-            })
+           
     }
 
     @Post('reserve')

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../classes/user.model';
 import { Model } from 'mongoose';
@@ -18,6 +18,26 @@ export class UserService {
     
     findUserById(userId: string): Promise<User> {
         return this.userModel.find({_id: userId})
+    }
+
+    findMedicById(userId: string): Promise<User> {
+        let value
+        const medic = this.userModel.findOne({_id: userId, roles: {$elemMatch:{$eq:"PROFESSIONAL"}}}).then((reserva) => {
+            if(!reserva){
+              console.log('medico no encontrado')
+              throw new HttpException("Medic not found", HttpStatus.BAD_REQUEST)
+            } else {
+              value = true
+              return reserva
+            }
+          }
+        );
+        if( value !== false) {
+          return new Promise((resolve, reject) => {
+            console.log('Medic found')
+            resolve(medic) 
+          })
+        }
     }
 
     findOne(options: any): Promise<User> {
