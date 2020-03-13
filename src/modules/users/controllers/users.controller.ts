@@ -32,6 +32,13 @@ export class UsersController {
     
         return this.usersService.findUserById(userId);
     }
+
+    @Get('medic/:userId')
+    async findOneMedic(@Param('userId')  userId: string): Promise<User> {
+        console.log('Searching all users');
+    
+        return this.usersService.findMedicById(userId);
+    }
     @Put(':userId')
     @UseGuards(AuthenticationGuard)
     async updateUser(@Param('userId') userId: string, @Body() changes: User): Promise<User> {
