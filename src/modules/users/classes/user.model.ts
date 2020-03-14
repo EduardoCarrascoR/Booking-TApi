@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document } from "mongoose";
-import { IsString, IsBoolean, IsMongoId, IsDate, IsEmail, IsUrl, IsArray } from "class-validator";
+import { IsString, IsBoolean, IsMongoId, IsDate, IsEmail, IsUrl, IsArray, IsObject } from "class-validator";
 
 export class User extends Document {
   @IsString() displayName: string;
@@ -9,6 +9,7 @@ export class User extends Document {
   @IsString() phoneNumber: string;
   @IsString() speciality: string;
   @IsUrl() photoURL: string;
+  @IsArray() workdays: Object[];
   @IsString() rol: string
   @IsString() dni: string;
   @IsDate() birthday: Date;
@@ -30,8 +31,22 @@ export const UsersSchema = new mongoose.Schema({
   reserves: { type: [mongoose.Schema.Types.ObjectId],
     ref: 'Schedule' 
   },
+  workDays: { type: Array, 
+    items: {
+      type: Object, 
+      propieties: {
+        monday: { type: Boolean},
+        tuesday: { type: Boolean},
+        wednesday: { type: Boolean},
+        thursday: { type: Boolean},
+        friday: { type: Boolean},
+        saturday: { type: Boolean},
+        sunday: { type: Boolean}
+      }
+    } 
+  },
   dni: { type: String, required: true, lowercase: true, unique: true, trim: true },
-  birthday: { type: Date, required: true },
+  birthdate: { type: Date, required: true },
   speciality: { type: String, default: 'N/A'},
   schedules: {
     type: [mongoose.Schema.Types.ObjectId],
