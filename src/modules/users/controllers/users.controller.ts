@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards, Put, BadRequestException, Param, Body, Post, Delete } from '@nestjs/common';
+import { Controller, Get, UseGuards, Put, BadRequestException, Param, Body, Post, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { User } from '../classes/user.model';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { UserService } from '../services/users.service';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { ValidationPipe } from 'src/pipes/validation.pipes';
 
 @Controller('user')
 export class UsersController {
@@ -61,8 +62,16 @@ export class UsersController {
     
 
     @Post('signup')
-    async createUser(@Body() user: Partial<User>): Promise<User> {
+    async createUser(@Body(ValidationPipe) user: Partial<User>): Promise<User> {
         console.log('Creating new user');
-        return this.usersService.addUser(user);
+        return this.usersService.addUser(user).then((result) => {
+            if(result){
+                return result
+            } else {
+                throw new HttpException("the user was not created, because it already exists", HttpStatus.BAD_REQUEST)
+            }
+        }).catch(() => {
+            throw new HttpException('the user was not created, because it already exists', HttpStatus.BAD_REQUEST)
+        });
     }
 }
