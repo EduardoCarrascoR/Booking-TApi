@@ -2,6 +2,7 @@
 /dist
 /node_modules
 .env
+/booking-time-app
 # Logs
 logs
 *.log
