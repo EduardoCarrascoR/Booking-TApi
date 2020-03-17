@@ -20,6 +20,16 @@ export class User extends Document {
   @IsString() @IsMongoId() _id: string;
   @IsString() password: string;
 }
+export class UserClient extends Document {
+  @IsString() displayName: string;
+  @IsEmail() email: string;
+  @IsString() phoneNumber: string;
+  @IsUrl() photoURL: string;
+  @IsString() dni: string;
+  @IsDate() birthday: Date;
+  @IsString() password: string;
+}
+
 
 export const UsersSchema = new mongoose.Schema({
   displayName: { type: String, required: true, trim: true },

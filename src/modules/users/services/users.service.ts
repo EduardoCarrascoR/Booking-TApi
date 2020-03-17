@@ -1,8 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../classes/user.model';
+import { User, UserClient } from '../classes/user.model';
 import { Model } from 'mongoose';
 import * as password from 'password-hash-and-salt';
+import { response } from 'express';
+import { rejects } from 'assert';
 
 
 @Injectable()
@@ -61,18 +63,37 @@ export class UserService {
     }
 
     async addUser(user: Partial<User>): Promise<User>{
-        let newUser
-    
-        return new Promise((resolve, reject) => {
-          password(user.password).hash((err, hash) => {
-            if(err){
-              reject(new Error('Something went wrong!'));
-            }
-            user.password = hash;
-            newUser = this.userModel(user);
-            newUser.save();
-            resolve(newUser.toObject({ versionKey: false }));
-          });
+      let newUser
+  
+      return new Promise((resolve, reject) => {
+        password(user.password).hash((err, hash) => {
+          if(err){
+            reject(new Error('Something went wrong!'));
+          }
+          user.password = hash;
+          newUser = this.userModel(user);
+          newUser.save();
+          resolve(newUser.toObject({ versionKey: false }));
         });
-      }
+      });
+    }
+
+    async addUserClient(user: UserClient): Promise<User> {
+      let newUser
+
+      return new Promise((resolve, reject) => {
+        password(user.password).hash((err, hash) => {
+          if(err){
+            reject( new Error('Something went wrong!'))
+          }
+          user.password = hash;
+          newUser = this.userModel(user);
+          newUser.save();
+          resolve(newUser.toObject({ versionKey: false }));
+        });
+      })
+  
+    }
+
+
 }
